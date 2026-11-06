@@ -1,0 +1,22 @@
+# 004 · Active Routine — Tareas
+
+- [x] Crear `src/app/dashboard/routine/active/page.tsx` con Suspense wrapper.
+- [x] Implementar carga de ejercicios con join a muscle_groups.
+- [x] Implementar generación dinámica de listas de calentamiento y estiramiento por slug.
+- [x] Implementar animación de intro con cuenta regresiva y sonidos.
+- [x] Implementar fase warmup con timer individual y avance automático/manual.
+- [x] Corregir stale closure en handleTimerEnd usando refs para las listas.
+- [x] Implementar guard `timerEndCalledRef` para evitar doble ejecución.
+- [x] Implementar fase exercise con stopwatch acumulativo.
+- [x] Implementar pausa global que detiene stopwatch y countdown.
+- [x] Implementar registro opcional de peso por ejercicio.
+- [x] Implementar fase rest con countdown y botón de saltar.
+- [x] Implementar fase stretching igual que warmup.
+- [x] Implementar useEffect separado para totalElapsed en fase exercise.
+- [x] Implementar sonidos con Web Audio API (beep triple al terminar timer, melodía al finalizar).
+- [x] Implementar fase finished con canvas-confetti y pantalla de resumen.
+- [x] Guardar completed_at, duration_seconds y weight_used al finalizar.
+- [x] Corregir visualización de GIF/imagen (aspect-square, object-contain).
+- [x] Eliminar scroll vertical en todas las fases.
+- [x] Validar criterios de aceptación de `spec.md`.
+- [x] Mover la feature a "Hecho" en `constitution/roadmap.md`.

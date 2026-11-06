@@ -16,7 +16,7 @@ export default async function DashboardPage() {
         <span className="font-bold text-lg">💪 WorkoutApp</span>
         <div className="flex items-center gap-6">
           <Link
-            href="/log"
+            href="/dashboard/log"
             className="text-gray-400 hover:text-white text-sm transition-colors"
           >
             Bitácora
