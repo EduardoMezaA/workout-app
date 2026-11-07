@@ -116,9 +116,15 @@ export default function ProgressDashboard() {
 
     async function fetchInitial() {
       try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
         const { data: allRoutines, error: rError } = await supabase
           .from("routines")
           .select("id, completed_at")
+          .eq("user_id", user.id)
           .not("completed_at", "is", null)
           .order("completed_at", { ascending: false });
 
@@ -203,6 +209,14 @@ export default function ProgressDashboard() {
       try {
         const { from, to } = getDateRange(selectedRange);
 
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          if (active) setRoutines([]);
+          return;
+        }
+
         let query = supabase
           .from("routines")
           .select(
@@ -223,6 +237,7 @@ export default function ProgressDashboard() {
             )
           `
           )
+          .eq("user_id", user.id)
           .not("completed_at", "is", null)
           .lte("completed_at", to.toISOString())
           .order("completed_at", { ascending: true });
