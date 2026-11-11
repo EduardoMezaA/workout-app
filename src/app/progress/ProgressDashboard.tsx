@@ -97,6 +97,7 @@ function getWeekKey(d: Date): string {
 export default function ProgressDashboard() {
   const [selectedRange, setSelectedRange] = useState<DateRangeKey>("30d");
   const [loading, setLoading] = useState(true);
+  const [exercisesLoading, setExercisesLoading] = useState(true);
   const [totalHistoricRoutinesCount, setTotalHistoricRoutinesCount] = useState<number | null>(null);
 
   // Datos del rango actual
@@ -190,6 +191,8 @@ export default function ProgressDashboard() {
         }
       } catch (err) {
         if (active) console.error("Error en fetchInitial:", err);
+      } finally {
+        if (active) setExercisesLoading(false);
       }
     }
 
@@ -647,7 +650,7 @@ export default function ProgressDashboard() {
             Carga máxima registrada por sesión en un ejercicio específico
           </p>
         </div>
-        {loading ? (
+        {loading || exercisesLoading ? (
           <div className="h-64 flex items-center justify-center text-gray-500 text-sm">
             Cargando ejercicios...
           </div>
