@@ -36,17 +36,24 @@ export default function StrengthChart({
   );
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredExercises = useMemo(() => {
-    if (!searchQuery.trim()) return exercises;
-    const q = searchQuery.toLowerCase();
-    return exercises.filter((ex) => ex.name.toLowerCase().includes(q));
-  }, [exercises, searchQuery]);
-
   // Si el ejercicio seleccionado no está o cambió
   const activeExerciseId =
     selectedExerciseId && exercises.some((e) => e.id === selectedExerciseId)
       ? selectedExerciseId
       : exercises[0]?.id || "";
+
+  // Opciones visibles: las que coinciden con la búsqueda, pero siempre incluye
+  // el ejercicio activo para que el <select> nunca tenga un valor fuera de sus opciones
+  const filteredExercises = useMemo(() => {
+    const activeExercise = exercises.find((e) => e.id === activeExerciseId);
+    if (!searchQuery.trim()) return exercises;
+    const q = searchQuery.toLowerCase();
+    const matches = exercises.filter((ex) => ex.name.toLowerCase().includes(q));
+    if (activeExercise && !matches.some((ex) => ex.id === activeExercise.id)) {
+      return [activeExercise, ...matches];
+    }
+    return matches;
+  }, [exercises, searchQuery, activeExerciseId]);
 
   const chartData = useMemo(() => {
     if (!activeExerciseId) return [];
