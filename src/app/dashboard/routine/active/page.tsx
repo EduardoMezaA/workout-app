@@ -243,6 +243,21 @@ function ActiveRoutineContent() {
     return () => timers.forEach((t) => clearTimeout(t));
   }, [showIntro]);
 
+  // Advertencia al salir de la página mientras la rutina no ha terminado
+  useEffect(() => {
+    if (phase === "finished") return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [phase]);
+
   // Confeti al terminar
   useEffect(() => {
     if (phase !== "finished") return;
@@ -266,6 +281,7 @@ function ActiveRoutineContent() {
     });
   }, [phase]);
 
+  //Timer total
   useEffect(() => {
     if (phase !== "exercise") return;
     if (isPaused) return;
@@ -277,6 +293,7 @@ function ActiveRoutineContent() {
     return () => clearInterval(interval);
   }, [phase, isPaused]);
 
+  //Timer warmup y stretching
   useEffect(() => {
     if (warmupList.length > 0 && phase === "warmup") {
       setSeconds(warmupList[0]?.seconds || 30);
@@ -290,6 +307,7 @@ function ActiveRoutineContent() {
   useEffect(() => {
     stretchingListRef.current = stretchingList;
   }, [stretchingList]);
+  
 
   const playBeep = (frequency: number, duration: number, volume = 0.3) => {
     const ctx = new (

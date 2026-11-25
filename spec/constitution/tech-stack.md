@@ -3,7 +3,7 @@
 ## Tecnologías
 
 - **Lenguaje:** TypeScript estricto (strict mode activado)
-- **Framework:** Next.js 14 con App Router y Turbopack
+- **Framework:** Next.js 16.2.4 con App Router y Turbopack
 - **Runtime:** Node.js 25
 - **Base de datos:** Supabase (PostgreSQL) con Row Level Security activo
 - **Auth:** Supabase Auth con verificación de email
@@ -93,7 +93,7 @@ Los ejercicios de calentamiento y estiramiento se generan dinámicamente según 
 ## Límites duros
 
 - **Nunca** subir `.env.local` al repositorio — contiene keys de Supabase.
-- **No usar** `localStorage` ni `sessionStorage` — Supabase maneja la sesión con cookies vía middleware.
+- No guardar datos de autenticación (tokens, sesión, credenciales) en `localStorage` ni `sessionStorage`: Supabase maneja la sesión con cookies a través de `src/proxy.ts`. Se permite usarlos para estado temporal de interfaz o progreso de la rutina, sin datos sensibles, leyéndolos solo dentro de un `useEffect` y con `try/catch` (para evitar errores de hidratación en SSR).
 - **No mezclar** el cliente de Supabase de servidor con el de cliente — causará errores de hidratación.
 - **No instalar** dependencias nuevas sin justificarlo.
 - **No modificar** tablas de Supabase sin actualizar también las políticas RLS y los GRANTs correspondientes.

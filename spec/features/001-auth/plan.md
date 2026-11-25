@@ -17,7 +17,7 @@ Supabase Auth maneja toda la lógica de autenticación. Next.js con App Router u
 ## Decisiones
 
 - **Route Group `(auth)`** — agrupa las páginas de auth sin afectar la URL, permite layouts separados.
-- **Middleware en `proxy.ts`** — renombrado desde `middleware.ts` por deprecación en Next.js 15.
+- **Middleware en `proxy.ts`** — renombrado desde `middleware.ts` por deprecación en Next.js 16.2.4.
 - **Verificación de sesión en Server Components** — más seguro que solo validar en el cliente; el usuario nunca ve contenido protegido sin sesión válida.
 - **`createAdminClient()` para leer profiles en el layout de admin** — el RLS bloqueaba la consulta con el cliente normal; service_role la omite de forma controlada.
 

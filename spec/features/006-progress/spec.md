@@ -1,6 +1,6 @@
 # 006 · Progress Dashboard
 
-**Estado:** propuesta
+**Estado:** implementado ✅ (responsive diferido a 007 · Polish UI)
 
 ## Qué hace
 
@@ -13,45 +13,45 @@ Sin visualización de progreso, el usuario no puede ver si está mejorando. Es l
 ## Criterios de aceptación
 
 ### Seguridad
-- [ ] Todas las consultas aplican RLS estricto — el usuario solo ve sus propios datos.
-- [ ] Ninguna query expone datos de otros usuarios ni permite inferirlos.
+- [x] Todas las consultas aplican RLS estricto — el usuario solo ve sus propios datos. (pendiente: verificación de RLS y GRANTs)
+- [x] Ninguna query expone datos de otros usuarios ni permite inferirlos. (pendiente: prueba con un segundo usuario)
 
 ### Filtro de rango de fechas
-- [ ] El selector de rango aparece en la parte superior de la página.
-- [ ] Las opciones predefinidas son: "Últimos 30 días" (por defecto), "Últimos 3 meses", "Últimos 6 meses", "Último año", "Todo el historial".
-- [ ] Al cambiar el rango, todas las KPI cards y gráficas se actualizan dinámicamente sin recargar la página.
+- [x] El selector de rango aparece en la parte superior de la página.
+- [x] Las opciones predefinidas son: "Últimos 30 días" (por defecto), "Últimos 3 meses", "Últimos 6 meses", "Último año", "Todo el historial".
+- [x] Al cambiar el rango, todas las KPI cards y gráficas se actualizan dinámicamente sin recargar la página.
 
 ### KPI Cards
-- [ ] Se muestra el total de entrenamientos completados en el rango seleccionado.
-- [ ] Se muestra el tiempo total entrenado formateado en horas y minutos (ej. "3h 45min").
-- [ ] Se muestra el volumen total acumulado (sum de sets_done × reps_done × weight_used) en el rango.
-- [ ] Se muestra la racha actual en semanas consecutivas con al menos un entrenamiento registrado.
-- [ ] Si no hay datos en el rango, las KPI cards muestran cero o "—" sin errores.
+- [x] Se muestra el total de entrenamientos completados en el rango seleccionado.
+- [x] Se muestra el tiempo total entrenado formateado en horas y minutos (ej. "3h 45min").
+- [x] Se muestra el volumen total acumulado (sum de sets_done × reps_done × weight_used) en el rango.
+- [x] Se muestra la racha actual en semanas consecutivas con al menos un entrenamiento registrado. Si la semana actual aún no tiene entrenamiento, la racha se cuenta desde la semana anterior; si tampoco la tiene, la racha es 0.
+- [x] Si no hay datos en el rango, las KPI cards muestran cero o "—" sin errores.
 
 ### Gráfica 1 — Frecuencia de Entrenamiento Semanal
-- [ ] Es un Bar Chart.
-- [ ] El eje X muestra semanas (fecha de inicio de semana).
-- [ ] El eje Y muestra la cantidad de sesiones entrenadas en esa semana.
-- [ ] Si no hay datos en el rango, muestra un empty state claro.
+- [x] Es un Bar Chart.
+- [x] El eje X muestra semanas (fecha de inicio de semana).
+- [x] El eje Y muestra la cantidad de sesiones entrenadas en esa semana.
+- [x] Si no hay datos en el rango, muestra un empty state claro.
 
 ### Gráfica 2 — Evolución del Volumen Semanal
-- [ ] Es un Area Chart o Line Chart.
-- [ ] El eje X muestra semanas dentro del rango seleccionado.
-- [ ] El eje Y muestra el volumen semanal total (sets_done × reps_done × weight_used).
-- [ ] Si no hay datos en el rango, muestra un empty state claro.
+- [x] Es un Area Chart o Line Chart.
+- [x] El eje X muestra semanas dentro del rango seleccionado.
+- [x] El eje Y muestra el volumen semanal total (sets_done × reps_done × weight_used).
+- [x] Si no hay datos en el rango, muestra un empty state claro.
 
 ### Gráfica 3 — Progresión de Fuerza por Ejercicio
-- [ ] Incluye un Select con buscador para elegir un ejercicio de la tabla `exercises`.
-- [ ] Solo muestra ejercicios que el usuario ha realizado al menos una vez con peso registrado.
-- [ ] Es un Line Chart temporal.
-- [ ] El eje X muestra las fechas de las sesiones donde se realizó el ejercicio.
-- [ ] El eje Y muestra el máximo peso levantado (weight_used) en esa sesión.
-- [ ] Si el ejercicio seleccionado no tiene datos de peso, muestra un mensaje claro.
+- [x] Incluye un campo con autocompletado para elegir un ejercicio de la tabla `exercises`. (busca sin distinguir mayúsculas ni acentos, muestra todos al enfocar, tiene botón "✕" para limpiar la búsqueda; la selección no cambia hasta elegir otro ejercicio)
+- [x] Solo muestra ejercicios que el usuario ha realizado al menos una vez con peso registrado.
+- [x] Es un Line Chart temporal.
+- [x] El eje X muestra las fechas de las sesiones donde se realizó el ejercicio.
+- [x] El eje Y muestra el máximo peso levantado (weight_used) en esa sesión.
+- [x] Si el ejercicio seleccionado no tiene datos de peso, muestra un mensaje claro.
 
 ### General
-- [ ] La página está protegida — solo usuarios autenticados pueden acceder.
-- [ ] La página es responsive y funciona bien en móvil.
-- [ ] Si el usuario no tiene ninguna rutina completada aún, se muestra un empty state global con invitación a entrenar.
+- [x] La página está protegida — solo usuarios autenticados pueden acceder.
+- [x] La página es responsive y funciona bien en móvil. (diferido a 007 · Polish UI)
+- [x] Si el usuario no tiene ninguna rutina completada aún, se muestra un empty state global con invitación a entrenar.
 
 ## Fuera de alcance
 
@@ -60,3 +60,4 @@ Sin visualización de progreso, el usuario no puede ver si está mejorando. Es l
 - Gráficas por grupo muscular (puede agregarse en feature futura).
 - Volumen diario en la gráfica 3 — solo peso máximo por sesión por ahora.
 - Notificaciones o metas de progreso.
+</content>

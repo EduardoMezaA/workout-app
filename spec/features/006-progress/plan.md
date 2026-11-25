@@ -53,8 +53,9 @@ La query principal trae `routines` con sus `routine_exercises` en un solo reques
 1. Obtener todas las rutinas completadas (sin filtro de fecha para la racha)
 2. Agrupar por semana ISO (lunes a domingo)
 3. Ordenar semanas desc
-4. Contar semanas consecutivas desde la semana actual hacia atrás
-5. Si la semana actual no tiene entrenamiento, la racha es 0
+4. Si la semana actual tiene entrenamiento, contar semanas consecutivas desde ella hacia atrás
+5. Si la semana actual aún no tiene entrenamiento, contar desde la semana anterior hacia atrás
+6. Detenerse en la primera semana sin entrenamiento; si ni la semana actual ni la anterior tienen entrenamiento, la racha es 0
 ```
 
 ## Decisiones

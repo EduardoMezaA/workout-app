@@ -116,3 +116,41 @@
 - Recharts ya instalado, no reinstalar
 - workout_log = routines en este proyecto
 - spec.md y tasks.md del feature 006 NO han sido actualizados aún
+
+## 2026-11-24 — Feature 006: Progress Dashboard (cierre)
+
+**Estado:** Completado (responsive diferido a 007 · Polish UI)
+
+**Qué se hizo:**
+- Dashboard de progreso completo: KPI cards, frecuencia semanal, volumen semanal, progresión de fuerza por ejercicio y filtro de rango.
+- Cambios fuera de la spec original:
+  - Filtro `.eq("user_id", user.id)` en las queries de `routines` (ProgressDashboard.tsx).
+  - Estado `exercisesLoading` para no mostrar "Sin historial de cargas" mientras carga la lista de ejercicios.
+  - Campo con autocompletado en lugar de select + buscador, con botón "✕" para limpiar la búsqueda. Filtra sin distinguir mayúsculas ni acentos.
+  - Regla de racha: si la semana actual no tiene entrenamiento, se cuenta desde la anterior; si tampoco, la racha es 0.
+  - `overscroll-behavior-y: none` en globals.css (presente en el archivo; no fue un cambio de esta sesión, origen no verificado).
+  - Aviso `beforeunload` en la rutina activa mientras `phase !== "finished"` (active/page.tsx).
+- Lint y tsc: sin errores en src/app/progress/ ni en dashboard/page.tsx.
+
+**Archivos modificados:**
+- src/app/progress/ProgressDashboard.tsx — página principal del dashboard, queries, KPIs, gráficas y estado de carga.
+- src/app/progress/page.tsx — Server Component con verificación de sesión.
+- src/app/progress/components/KPICard.tsx — tarjeta KPI reutilizable.
+- src/app/progress/components/FrequencyChart.tsx — BarChart de sesiones por semana.
+- src/app/progress/components/VolumeChart.tsx — AreaChart de volumen semanal.
+- src/app/progress/components/StrengthChart.tsx — LineChart de peso máximo por sesión con campo de autocompletado.
+- src/app/dashboard/routine/active/page.tsx — listener `beforeunload` mientras la rutina no ha terminado.
+- spec/features/006-progress/spec.md, tasks.md, plan.md y spec/constitution/roadmap.md — estado y criterios.
+
+**Decisiones:**
+- Todo el cálculo de KPIs y gráficas en el cliente (volumen de datos pequeño, evita API routes).
+- Racha calculada sobre todo el historial, no sobre el rango seleccionado.
+- Gráfica 3 usa el peso máximo por sesión.
+
+**Pendientes:**
+- Verificar RLS y GRANTs de `routines` y `routine_exercises`.
+- Prueba con un segundo usuario para confirmar que no se exponen datos ajenos.
+- Responsive en móvil (diferido a 007 · Polish UI).
+- Limpieza de lint en admin, builder, active y log (26 errores, 11 warnings), fuera de este feature.
+- Retomar rutina tras recarga (backlog).
+- No se ejecutó `npm run build` en esta sesión.

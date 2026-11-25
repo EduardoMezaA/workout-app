@@ -6,7 +6,7 @@ El usuario elige grupos musculares y equipamiento disponible, y la app genera un
 ## Stack
 
 - Lenguaje: TypeScript estricto (strict mode activado)
-- Framework: Next.js 14 con App Router y Turbopack
+- Framework: Next.js 16.2.4 con App Router y Turbopack
 - Runtime: Node.js 25
 - Base de datos: Supabase (PostgreSQL) con RLS activado
 - Auth: Supabase Auth con verificación de email
@@ -90,7 +90,7 @@ El timer acumula `totalElapsed` en todas las fases excepto cuando `isPaused === 
 - No modificar las tablas de Supabase sin actualizar también las políticas RLS correspondientes.
 - No instalar dependencias nuevas sin avisar y justificar por qué se necesitan.
 - No tocar `src/lib/supabase/admin.ts` para usos que no sean estrictamente operaciones de administración — tiene acceso sin restricciones a la base de datos.
-- No usar `localStorage` ni `sessionStorage` — Supabase maneja la sesión con cookies a través del middleware.
+- No guardar datos de autenticación (tokens, sesión, credenciales) en `localStorage` ni `sessionStorage`: Supabase maneja la sesión con cookies a través de `src/proxy.ts`. Se permite usarlos para estado temporal de interfaz o progreso de la rutina, sin datos sensibles, leyéndolos solo dentro de un `useEffect` y con `try/catch` (para evitar errores de hidratación en SSR).
 - No crear componentes con estado dentro de otros componentes (causará pérdida de foco en inputs).
 - No hardcodear tiempos de ejercicio en segundos fuera de los objetos `WARMUP_BY_GROUP` y `STRETCHING_BY_GROUP`.
 

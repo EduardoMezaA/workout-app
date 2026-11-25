@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   LineChart,
   Line,
@@ -34,7 +34,9 @@ export default function StrengthChart({
   const [selectedExerciseId, setSelectedExerciseId] = useState<string>(
     exercises[0]?.id || ""
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Si el ejercicio seleccionado no está o cambió
   const activeExerciseId =
@@ -42,18 +44,15 @@ export default function StrengthChart({
       ? selectedExerciseId
       : exercises[0]?.id || "";
 
-  // Opciones visibles: las que coinciden con la búsqueda, pero siempre incluye
-  // el ejercicio activo para que el <select> nunca tenga un valor fuera de sus opciones
-  const filteredExercises = useMemo(() => {
-    const activeExercise = exercises.find((e) => e.id === activeExerciseId);
-    if (!searchQuery.trim()) return exercises;
-    const q = searchQuery.toLowerCase();
-    const matches = exercises.filter((ex) => ex.name.toLowerCase().includes(q));
-    if (activeExercise && !matches.some((ex) => ex.id === activeExercise.id)) {
-      return [activeExercise, ...matches];
-    }
-    return matches;
-  }, [exercises, searchQuery, activeExerciseId]);
+  // Normaliza quitando acentos y mayúsculas para comparar
+  const normalize = (s: string) =>
+    s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
+  const suggestions = useMemo(() => {
+    const q = normalize(query);
+    if (!q) return exercises;
+    return exercises.filter((ex) => normalize(ex.name).includes(q));
+  }, [exercises, query]);
 
   const chartData = useMemo(() => {
     if (!activeExerciseId) return [];
@@ -79,36 +78,89 @@ export default function StrengthChart({
 
   return (
     <div className="space-y-4">
-      {/* Selector y buscador de ejercicios */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-        <div className="relative flex-1 max-w-sm">
-          <input
-            type="text"
-            placeholder="Buscar ejercicio..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-          />
-        </div>
+      {/* Campo con autocompletado de ejercicios */}
+      <div className="relative max-w-sm">
+        <input
+          ref={inputRef}
+          type="text"
+          role="combobox"
+          aria-controls="exercise-listbox"
+          aria-expanded={isOpen}
+          aria-autocomplete="list"
+          placeholder="Buscar ejercicio..."
+          value={isOpen ? query : activeExerciseName}
+          onFocus={() => {
+            setQuery("");
+            setIsOpen(true);
+          }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setIsOpen(true);
+          }}
+          onBlur={() => {
+            setIsOpen(false);
+            setQuery("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setIsOpen(false);
+              setQuery("");
+              e.currentTarget.blur();
+            }
+          }}
+          className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-3 pr-10 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+        />
 
-        <div className="flex-1 sm:max-w-xs">
-          <select
-            value={activeExerciseId}
-            onChange={(e) => setSelectedExerciseId(e.target.value)}
-            className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+        {(isOpen ? query : activeExerciseName).length > 0 && (
+          <button
+            type="button"
+            aria-label="Limpiar búsqueda"
+            // onMouseDown evita que el input pierda foco antes del clic
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => {
+              setQuery("");
+              setIsOpen(true);
+              inputRef.current?.focus();
+            }}
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white"
           >
-            {filteredExercises.map((ex) => (
-              <option key={ex.id} value={ex.id} className="bg-gray-900 text-white">
-                {ex.name}
-              </option>
-            ))}
-            {filteredExercises.length === 0 && (
-              <option disabled value="" className="bg-gray-900 text-gray-500">
+            ✕
+          </button>
+        )}
+
+        {isOpen && (
+          <ul
+            id="exercise-listbox"
+            role="listbox"
+            className="absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-gray-900 border border-gray-700 rounded-xl shadow-lg py-1"
+          >
+            {suggestions.length === 0 ? (
+              <li className="px-3 py-2 text-xs text-gray-500">
                 No hay coincidencias
-              </option>
+              </li>
+            ) : (
+              suggestions.map((ex) => (
+                <li
+                  key={ex.id}
+                  role="option"
+                  aria-selected={ex.id === activeExerciseId}
+                  // onMouseDown evita que el input pierda foco antes de registrar el clic
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    setSelectedExerciseId(ex.id);
+                    setQuery("");
+                    setIsOpen(false);
+                  }}
+                  className={`px-3 py-2 text-xs cursor-pointer hover:bg-gray-800 ${
+                    ex.id === activeExerciseId ? "text-blue-400" : "text-white"
+                  }`}
+                >
+                  {ex.name}
+                </li>
+              ))
             )}
-          </select>
-        </div>
+          </ul>
+        )}
       </div>
 
       {chartData.length === 0 ? (
